@@ -1,0 +1,6 @@
+#!/bin/bash
+if [ $APP_ENV == 'development' ]; then
+  yarn run start-dev
+else
+  yarn run start
+fi

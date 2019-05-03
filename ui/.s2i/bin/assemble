@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [ ! $APP_ENV == 'development' ]; then
+  set -e
+  shopt -s dotglob
+  echo "---> Installing application source..."
+  mv /tmp/src/* ./
+fi
+
+cd /opt/app-root/src/
+pwd
+
+yarn global add pm2
+
+if [ -f package.json ]; then
+  echo "### Found package.json, installing the dependencies"
+  yarn install
+fi
+
+if [ ! $APP_ENV == 'development' ]; then
+  echo "### Fixing permissions"
+  fix-permissions ./
+fi
+
+if [ $APP_ENV == 'development' ]; then
+  echo "### you are a DEV! setting hot reload"
+  echo "### Dev dependencies"
+  yarn install --only=dev
+  echo "### runing"
+  .s2i/bin/run
+fi

@@ -1,0 +1,94 @@
+version: '3.6'
+
+services:
+
+  proxy:
+    container_name: ckl-central-proxy.local.com.br
+    image: jwilder/nginx-proxy:latest
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "./proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro"
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    networks:
+      main:
+        aliases:
+          - ckl-central-proxy.local.com.br
+
+  neo4j.local.com:
+    build: ./neo4j
+    volumes:
+      - "./neo4j/data:/data:rw"
+    ports:
+      - 7474:7474
+      - 7687:7687
+    environment:
+      - VIRTUAL_HOST=neo4j.local.com
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_dbms_shell_enabled=true
+    networks:
+      main:
+        aliases:
+          - neo4j.local.com.br
+
+  ckl-central-api.local.com:
+    build: ./api
+    ports:
+      - 80
+    volumes:
+    - "./api:/opt/app-root/src:rw"
+    environment:
+      - VIRTUAL_HOST=ckl-central-api.local.com
+      - VIRTUAL_PORT=80
+      - SECRET=secret
+      - APP_ENV=development
+      - ENV_ALIAS=development
+      - NODE_ENV=development
+      - DATABASE_HOST=bolt://neo4j.local.com
+      - DATABASE_PORT=7687
+      - DATABASE_USER=neo4j
+      - DATABASE_PASS=letmein
+      - TOKEN_EXPIRE_IN=48h
+      # PM2_PUBLIC_KEY=yyyyyyyyyyyyyyy
+      # PM2_SECRET_KEY=xxxxxxxxxxxxxxx
+      # PM2_WEB_CONCURRENCY=1
+      # PM2_WEB_MEMORY=512
+    command: '.s2i/bin/assemble'
+    links:
+    - neo4j.local.com
+    depends_on:
+    - neo4j.local.com
+    networks:
+      main:
+        aliases:
+          - ckl-central-api.local.com.br
+
+  ckl-central.local.com:
+    build: ./ui
+    ports:
+      - 80
+    volumes:
+      - "./ui:/opt/app-root/src:rw"
+    environment:
+      - VIRTUAL_HOST=ckl-central.local.com
+      - VIRTUAL_PORT=80
+      - SECRET=secret
+      - APP_ENV=development
+      - ENV_ALIAS=development
+      - NODE_ENV=development
+      - API_URL=http://ckl-central-api.local.com
+    command: '.s2i/bin/assemble'
+    links:
+    - ckl-central-api.local.com
+    depends_on:
+    - ckl-central-api.local.com
+    networks:
+      main:
+        aliases:
+          - ckl-central.local.com.br
+
+networks:
+  main:

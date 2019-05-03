@@ -1,0 +1,49 @@
+{
+  "name": "ckl-central-api",
+  "version": "0.0.1",
+  "description": "API app for CKL",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/nodemon --exec babel-node src/index.js",
+    "start-dev": "./node_modules/.bin/nodemon -e js,graphql --inspect=0.0.0.0:9229 --exec babel-node .",
+    "seedDb": "./node_modules/.bin/babel-node src/seed/seed-db.js"
+  },
+  "author": "Natam Oliveira",
+  "license": "MIT",
+  "dependencies": {
+    "@okgrow/graphql-scalars":"^0.4.5",
+    "apollo-boost":"^0.3.1",
+    "apollo-cache-inmemory":"^1.5.1",
+    "apollo-client":"^2.5.1",
+    "apollo-link-http":"^1.5.14",
+    "apollo-server":"^2.4.8",
+    "crypto":"^1.0.1",
+    "graphql":"^14.2.1",
+    "graphql-tag":"^2.10.1",
+    "graphql-tools": "^4.0.4",
+    "jsonwebtoken":"^8.5.1",
+    "lodash":"^4.17.11",
+    "neo4j-driver":"^1.7.3",
+    "neo4j-graphql-js":"^2.5.0",
+    "node-fetch":"^2.3.0"
+  },
+  "devDependencies": {
+    "babel-cli":"^6.26.0",
+    "babel-preset-env":"^1.7.0",
+    "husky":"^2.0.0",
+    "lint-staged":"^8.1.5",
+    "nodemon":"^1.18.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md,graphql": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
