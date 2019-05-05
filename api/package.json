@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/nodemon --exec babel-node src/index.js",
     "start-dev": "./node_modules/.bin/nodemon -e js,graphql --inspect=0.0.0.0:9229 --exec babel-node .",
-    "seedDb": "./node_modules/.bin/babel-node src/seed/seed-db.js"
+    "seed-db": "./node_modules/.bin/babel-node src/seed/seed-db.js"
   },
   "author": "Natam Oliveira",
   "license": "MIT",
