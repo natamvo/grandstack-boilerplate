@@ -75,11 +75,10 @@ services:
     environment:
       - VIRTUAL_HOST=ckl-central.local.com
       - VIRTUAL_PORT=80
-      - SECRET=secret
       - APP_ENV=development
       - ENV_ALIAS=development
       - NODE_ENV=development
-      - API_URL=http://ckl-central-api.local.com
+      - REACT_APP_API_URL=http://ckl-central-api.local.com
     command: '.s2i/bin/assemble'
     links:
     - ckl-central-api.local.com

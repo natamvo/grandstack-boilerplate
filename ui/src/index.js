@@ -7,7 +7,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 
 const client = new ApolloClient({
-  uri: process.env.VIRTUAL_HOST
+  uri: process.env.REACT_APP_API_URL
 });
 
 const Main = () => (
