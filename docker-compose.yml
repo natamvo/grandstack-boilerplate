@@ -44,6 +44,7 @@ services:
       - VIRTUAL_HOST=ckl-central-api.local.com
       - VIRTUAL_PORT=80
       - SECRET=secret
+      - ADMIN_PASSWORD=pass
       - APP_ENV=development
       - ENV_ALIAS=development
       - NODE_ENV=development
@@ -78,6 +79,7 @@ services:
       - APP_ENV=development
       - ENV_ALIAS=development
       - NODE_ENV=development
+      - REACT_APP_SECRET=thisissecret
       - REACT_APP_API_URL=http://ckl-central-api.local.com
     command: '.s2i/bin/assemble'
     links:
