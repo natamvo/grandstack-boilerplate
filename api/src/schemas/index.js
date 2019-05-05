@@ -6,11 +6,11 @@ import {
 import { schemaDirectives, directives } from "./directives"
 
 //---------------------- MODULES -----------------------------
-import { resolvers as UserResolvers, UserQueries } from "./User";
+import { resolvers as UserResolvers, typeDefs as UserDefs } from "./User";
 //-------------------- END MODULES ---------------------------
 
 //This is for you create separated Queries and Mutations
-const Query = `
+const typeDefs = `
   scalar DateTime
   
   ${directives}
@@ -38,12 +38,11 @@ const resolvers = {
  */
 
 export const schema = makeAugmentedSchema({
-    typeDefs: Query + UserQueries,
+    typeDefs: typeDefs + UserDefs,
     resolvers: merge(resolvers, UserResolvers),
     schemaDirectives,
-    /** turning auto-creation off */
     config: {
-        query: true,
-        mutation: true
+        query: false,
+        mutation: false
     }
 })
