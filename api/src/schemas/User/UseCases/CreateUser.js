@@ -4,25 +4,25 @@ import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
 
 export default async (obj, params, ctx, resolveInfo) => {
-  if(!validate(params.searchUserInput.email)) {
+  if(!validate(params.email)) {
     throw new ApolloError('user_email_not_valid', 200, ['This user`s email is not valid'])
   }
   const findUser = await ctx.driver.session().run(
-    `MATCH (u:User {email: "${params.searchUserInput.email}"}) return u`
+    `MATCH (u:User {email: "${params.email}"}) return u`
   )
   if (findUser.records.length > 0) {
     throw new ApolloError('user_email_already_exists', 400, ['This user`s email already exists'])
   }
 
-  params.dataUserInput.password = crypto.createHmac('sha256', process.env.SECRET).update(params.dataUserInput.password).digest('hex')
-  params.dataUserInput.token = jwt.sign(
+  params.password = crypto.createHmac('sha256', process.env.SECRET).update(params.password).digest('hex')
+  params.token = jwt.sign(
     {
       ID: params.ID,
       full_name: params.full_name,
-      email: params.searchUserInput.email
+      email: params.email
     },
     process.env.SECRET,
-    { expiresIn: '48h' }
+    { expiresIn: process.env.TOKEN_EXPIRE_IN }
   )
 
   const user =  await neo4jgraphql(obj, params, ctx, resolveInfo, true)

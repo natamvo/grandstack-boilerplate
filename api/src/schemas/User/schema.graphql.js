@@ -39,98 +39,74 @@ const typeDefs = `
 
     type Mutation {
       CreateUser (
-        searchUserInput: searchUserInput
-        dataUserInput: dataUserInput
+        name: String!
+        email: String!
+        password: String!
+        role: String = "SUBSCRIBER"
       ): User
         @cypher(
           statement:
-            "MERGE (u:User {email: $searchUserInput.email}) \
-            ON CREATE SET \
-              u.ID = apoc.create.uuid(), \
-              u.name = $dataUserInput.name, \
-              u.email = $searchUserInput.email, \
-              u.password = $dataUserInput.password, \
-              u.token = $dataUserInput.token, \
-              u.created = datetime(), \
-              u.softDeleted = false, \
-              u.verified = false \
-            ON MATCH SET \
-              u.name = $dataUserInput.name, \
-              u.password = $dataUserInput.password, \
-              u.token = $dataUserInput.token, \
-              u.updated = datetime() \
-            MERGE (r:Role {name: 'SUBSCRIBER'}) \
+            "CREATE (u:User { \
+              ID: apoc.create.uuid(), \
+              name: $name, \
+              email: $email, \
+              password: $password, \
+              created: datetime(), \
+              softDeleted: false, \
+              verified: false \
+            }) \
+            MERGE (r:Role {name: $role}) \
             CREATE (u)-[rp:PLAYS]->(r) \
             RETURN u"
         )
 
       UpdateUser (
-        searchUserInput: searchUserInput
-        dataUserInput: dataUserInput
+        name: String
+        email: String
+        password: String
       ): User
         @cypher(
           statement:
-            "MERGE (u:User {email: $searchUserInput.email}) \
-            ON CREATE SET \
-              u.id = apoc.create.uuid(), \
-              u.first_name = $dataUserInput.first_name, \
-              u.last_name = $dataUserInput.last_name, \
-              u.email = $searchUserInput.email, \
-              u.password = $dataUserInput.password, \
-              u.created = datetime(), \
-              u.softDeleted = false, \
-              u.verified = false \
-            ON MATCH SET \
-              u.last_name = $dataUserInput.name, \
-              u.email = $dataUserIpnut.email, \
-              u.password = $dataUserInput.password, \
-              u.verified = $dataUserInput.verified, \
+            "MATCH (u:User {email: $email}) \
+            SET \
+              u.name = $name, \
+              u.email = $email, \
+              u.password = $password, \
+              u.verified = $verified, \
               u.updated = datetime() \
             RETURN u"
         )
 
       ForgotPassword (
-        searchUserInput: searchUserInput
+        email: String!
       ): Boolean
 
       SoftDeleteUser (
-        searchUserInput: searchUserInput
+        ID: ID!
       ): Boolean
         @cypher(
           statement:
-            "MATCH (u:User {email: $searchUserInput.email}) \
+            "MATCH (u:User {ID: $ID}) \
             SET u.softDeleted = true \
             RETURN {deleted: true}"
         )
 
       DeleteUser (
-        searchUserInput: searchUserInput
+        ID: ID!
       ): Boolean
         @cypher(
           statement:
-            "MATCH (u:User {email: $searchUserInput.email})-[r]-(p) \
+            "MATCH (u:User {ID: $ID})-[r]-(p) \
             Delete u,r \
             RETURN {deleted: true}"
         )
 
       LoginUser (
-        loginUserInput: loginUserInput
+        email: String!
+        password: String!
       ): LoginUser
     }
 
-    input searchUserInput {
-      email: String!
-    }
-
-    input dataUserInput {
-      name: String!
-      password: String!
-    }
-
-    input loginUserInput {
-      email: String!
-      password: String!
-    }
 `
 
 export { typeDefs }
