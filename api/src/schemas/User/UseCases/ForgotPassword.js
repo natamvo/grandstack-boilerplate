@@ -7,10 +7,10 @@ export default async (obj, params, ctx, resolveInfo) => {
   const session = ctx.driver.session()
 
   const fn = await session
-    .run(`MATCH (u:User {email:"${params.searchUserInput.email}""}) return u`)
+    .run(`MATCH (u:User {email:"${params.email}""}) return u`)
     .then((result) => {
       if (result.records.length > 0) {
-        return session.run(`MATCH (u:User {email:"${params.searchUserInput.email}"}) SET u.password="${newPasswordHash}" return u`)
+        return session.run(`MATCH (u:User {email:"${params.email}"}) SET u.password="${newPasswordHash}" return u`)
           .then(function (result) {
             if (result.records.length > 0) {
               session.close()
