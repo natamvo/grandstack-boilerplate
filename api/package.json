@@ -21,7 +21,7 @@
     "crypto":"^1.0.1",
     "graphql":"^14.2.1",
     "graphql-tag":"^2.10.1",
-    "graphql-tools": "^4.0.4",
+    "graphql-tools": "^5.0.0-rc.1",
     "jsonwebtoken":"^8.5.1",
     "lodash":"^4.17.11",
     "neo4j-driver":"^1.7.3",

@@ -1,4 +1,6 @@
 import { makeAugmentedSchema } from "neo4j-graphql-js"
+import { mergeSchemas } from "graphql-tools";
+import { printSchema } from "graphql";
 import { merge } from "lodash"
 import {
     DateTime
@@ -38,7 +40,11 @@ const resolvers = {
  */
 
 export const schema = makeAugmentedSchema({
-    typeDefs: typeDefs + UserDefs,
+    typeDefs: printSchema(
+        mergeSchemas({
+            schemas: [typeDefs, UserDefs]
+        })
+    ),
     resolvers: merge(resolvers, UserResolvers),
     schemaDirectives,
     config: {
