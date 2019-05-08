@@ -1,9 +1,17 @@
 {
   "version": 2,
   "builds": [
-    { "src": "./api/src/index.js", "use": "@now/node-server" }
+    { "src": "./api/src/index.js", "use": "@now/node-server" },
+    { "src": "ui/package.json", "use": "@now/static-build", "config": { "distDir": "ui/build" } }
   ],
   "routes": [
-    { "src": "/.*", "dest": "/api/src/index.js" }
+    { "src": "/api", "dest": "/api/src/index.js" },
+    { "src": "/static/(.*)", "headers": { "cache-control": "s-maxage=31536000,immutable" }, "dest": "/ui/build/static/$1" },
+    { "src": "/favicon.ico", "dest": "/ui/build/favicon.ico" },
+    { "src": "/asset-manifest.json", "dest": "/ui/build/asset-manifest.json" },
+    { "src": "/manifest.json", "dest": "/ui/build/manifest.json" },
+    { "src": "/precache-manifest.(.*)", "dest": "/ui/build/precache-manifest.$1" },
+    { "src": "/service-worker.js", "headers": { "cache-control": "s-maxage=0" }, "dest": "/ui/build/service-worker.js" },
+    { "src": "/(.*)", "headers": {"cache-control": "s-maxage=0"}, "dest": "/ui/build/index.html" }
   ]
 }

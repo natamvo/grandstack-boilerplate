@@ -1,5 +1,6 @@
 # project
 neo4j/data/
+build/
 
 # dependencies
 node_modules/
